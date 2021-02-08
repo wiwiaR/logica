@@ -10,4 +10,8 @@ O trabalho foi feito em dupla por João José e Vitória Ribeiro em linguagem de
 
 * Quando colocar o choque dos cursos, coloque em ordem crescente (exemplo: 2 5).
 
-* Só podem ser inseridos dois choques por vez.
+* Devem ser inseridos apenas dois cursos por choque.
+
+* Os cursos são diferenciados por seus índices (por exemplo, o curso 1 e o curso 4 são cursos diferentes).
+
+* A função IsSatisfatível() verifica se o choque de horários é satisfatível e, se for, ele retorna a lista de cursos alocados, caso contrário, retorna apenas a informação de que não é possível fazer a alocação.
