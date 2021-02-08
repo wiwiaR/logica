@@ -1,6 +1,8 @@
 # Projeto 1 de Lógica
 
-Código do projeto 1 da disciplina de lógica de programação. O trabalho foi feito em dupla por João José e Vitória Ribeiro em linguagem de programação Python.
+Código do projeto 1 da disciplina de lógica de programação.
+
+O trabalho foi feito em dupla por João José e Vitória Ribeiro em linguagem de programação Python.
 
 ## Avisos
 
