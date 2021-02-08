@@ -1,12 +1,20 @@
 from formula import And
-from formula import Or
 from formula import Not
 from formula import Atom
 
+
 vetorIndice = []
 vetorIndiceRetirados = []
+vetorCorrespondencia = []
 tabelaVerdade = []  # A tabela deve ser criada fora e antes da função
 horario = 1
+final = ''
+
+
+def limpaTabela(tabelaVerdade):
+    for i in range(len(tabelaVerdade)):
+        del(tabelaVerdade[-1])
+    return tabelaVerdade
 
 
 def retiraChoques(choques, vetorIndiceRetirados, numeroDeChoques):
@@ -25,76 +33,40 @@ def retiraChoques(choques, vetorIndiceRetirados, numeroDeChoques):
     return choques
 
 
-def imprimeHorario(formula, horario, choques, numeroDeChoques):
+def verificaHorario(horario, numeroDeHorarios, final):
+    if horario > numeroDeHorarios:
+        print('Não é possivel alocar todos os cursos')
+    else:
+        print(final)
+        print('Todos os cursos foram alocados')
 
-    # Recebe a fórmula (00111) e o horário
+
+def imprimeHorario(formula, horario, choques, numeroDeChoques, final):
+    # RECEBE FORMULA (00111) E O HORARIO 0 A PRIORI
     # 01
     j = -1
     for i in range(len(formula)):
         j = j + 1
         if formula[i] == '1':
-            print('Curso {0} alocado no horario H{1}'.format(
+            final = final + ('Curso {0} alocado no horario H{1}\n'.format(
                 vetorIndice[j], horario))
             vetorIndiceRetirados.append(vetorIndice[j])
             del(vetorIndice[j])
             j = j - 1
     if (len(vetorIndice)) == 1:
         horario = horario + 1
-        print('Curso {0} alocado no horario H{1}'.format(
+        final = final + ('Curso {0} alocado no horario H{1}\n'.format(
             vetorIndice[0], horario))
     else:
         horario = horario + 1
         choques2 = retiraChoques(
             choques, vetorIndiceRetirados, numeroDeChoques)
-        numeroDeChoques = len(choques2)
+        numeroDeChoques2 = len(choques2)
         numeroDeCursos2 = len(vetorIndice)
-
-        formula2 = solucionaFormula(numeroDeCursos2, numeroDeChoques, choques2)
-        return imprimeHorario(formula2, horario, choques2, numeroDeChoques)
-    return vetorIndice
-
-
-def solucionaFormula(numeroDeCursos, numeroDeChoques, choques):
-
-    # Retorna a linha que contém maior número de atômicas true (exemplo: 00111)
-    if numeroDeChoques == 1:
-        matriz = ''
-        str(matriz)
-        for i in range(numeroDeCursos):
-            if int(choques[0][0])-1 == i:
-                matriz = matriz + '0'
-            else:
-                matriz = matriz + '1'
-        return matriz
-
-    matrizTabelaVerdade = geraTabelaVerdade(numeroDeCursos, numeroDeCursos)
-    tabelaAuxiliar = []
-    contador = 0
-
-    for i in range(len(matrizTabelaVerdade)):
-        tabelaValor = []
-        resultadoLinha = 0
-        for j in range(numeroDeChoques):
-            p = int(choques[j][0])-1
-            q = int(choques[j][2])-1
-            aux = rAnd(int(matrizTabelaVerdade[i][p]), int(
-                matrizTabelaVerdade[i][q]))
-            tabelaValor.append(rNot(aux))
-
-            if j == 1:
-                resultadoLinha = rAnd(tabelaValor[j], tabelaValor[j-1])
-
-            if j > 1:
-                resultadoLinha = rAnd(tabelaValor[j], resultadoLinha)
-
-            if resultadoLinha == 1 and j == numeroDeChoques-1:
-                maximoTrue = 0
-                for k in range(numeroDeCursos):
-                    maximoTrue = maximoTrue + int(matrizTabelaVerdade[i][k])
-                if maximoTrue > contador:
-                    contador = maximoTrue
-                    tabelaAuxiliar = matrizTabelaVerdade[i]
-    return tabelaAuxiliar
+        limpaTabela(tabelaVerdade)
+        formula2 = solucionaFormula(vetorIndice, choques2)
+        return imprimeHorario(formula2, horario, choques2, numeroDeChoques, final)
+    return verificaHorario(horario, numeroDeHorarios, final)
 
 
 def rNot(valor):
@@ -106,6 +78,20 @@ def rNot(valor):
 
 def rAnd(valor1, valor2):
     if valor1 == 0 or valor2 == 0:
+        return 0
+    else:
+        return 1
+
+
+def rOr(valor1, valor2):
+    if valor1 == 1 or valor2 == 1:
+        return 1
+    else:
+        return 0
+
+
+def rImplies(esquerda, direita):
+    if esquerda == 1 and direita == 0:
         return 0
     else:
         return 1
@@ -147,21 +133,46 @@ def criarFormula(choques):
     return formula
 
 
-# --- Entradas --- #
+def solucionaFormula(vetorIndiceA, choquesA):
+    resultado = 0
+    a = len(vetorIndiceA)
+    matrizTabelaVerdade = geraTabelaVerdade(a, a)
+    linhaSatisfativel = []
+    for i in range(len(matrizTabelaVerdade)):  # 0-15
+        resultadoAnterior = 1
+        for k in range(a):  # 0-3
+            for j in range(len(choquesA)):
+                p = int(choquesA[j][0])
+                if p == vetorIndiceA[k]:
+                    q = int(choquesA[j][2])
+                    l = k
+                    while l < a:
+                        if q == vetorIndiceA[l]:
+                            resultado = rAnd(int(matrizTabelaVerdade[i][k]), int(
+                                matrizTabelaVerdade[i][l]))
+                            resultado = rNot(resultado)*resultadoAnterior
+                            resultadoAnterior = resultado
+                            if resultado == 1 and j == len(choquesA)-1:
+                                linhaSatisfativel = matrizTabelaVerdade[i]
+                        l = l+1
+    return linhaSatisfativel
 
-numeroDeCursos = int(input("Entre com o número de cursos: "))
+
+numeroDeCursos = int(
+    input('Entre com o número de cursos a serem organizados: '))
 numeroDeHorarios = int(
     input('Entre com o número de Horarios a serem organizados: '))
 numeroDeChoques = int(
     input('Entre com o número de choques a serem organizados: '))
 choques = [str(input("Entre com os choques de cursos por alunos com base na ordem apresentada na forma Exemplo(1 2): "))
            for i in range(numeroDeChoques)]
+numeroDeCursos = 5
 
-# --- Saídas --- #
 
 for i in range(numeroDeCursos):
     vetorIndice.append(i+1)
+    vetorCorrespondencia.append(i+1)
 
-formula1 = criarFormula(choques)
-formula = solucionaFormula(numeroDeCursos, numeroDeChoques, choques)
-imprimeHorario(formula, horario, choques, numeroDeChoques)
+
+formula = solucionaFormula(vetorIndice, choques)
+imprimeHorario(formula, horario, choques, numeroDeChoques, final)
