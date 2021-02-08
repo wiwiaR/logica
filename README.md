@@ -6,4 +6,8 @@ O trabalho foi feito em dupla por João José e Vitória Ribeiro em linguagem de
 
 ## Avisos
 
-Quando colocar o choque dos cursos, coloque em ordem crescente (1 2).
+* Os choques devem ser separados por espaço (exemplo: 1 2).
+
+* Quando colocar o choque dos cursos, coloque em ordem crescente (exemplo: 2 5).
+
+* Só podem ser inseridos dois choques por vez.
