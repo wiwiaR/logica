@@ -33,7 +33,7 @@ def retiraChoques(choques, vetorIndiceRetirados, numeroDeChoques):
     return choques
 
 
-def verificaHorario(horario, numeroDeHorarios, final):
+def isSatisfativel(horario, numeroDeHorarios, final):
     if horario > numeroDeHorarios:
         print('Não é possivel alocar todos os cursos')
     else:
@@ -66,7 +66,7 @@ def imprimeHorario(formula, horario, choques, numeroDeChoques, final):
         limpaTabela(tabelaVerdade)
         formula2 = solucionaFormula(vetorIndice, choques2)
         return imprimeHorario(formula2, horario, choques2, numeroDeChoques, final)
-    return verificaHorario(horario, numeroDeHorarios, final)
+    return isSatisfativel(horario, numeroDeHorarios, final)
 
 
 def rNot(valor):
@@ -166,7 +166,6 @@ numeroDeChoques = int(
     input('Entre com o número de choques a serem organizados: '))
 choques = [str(input("Entre com os choques de cursos por alunos com base na ordem apresentada na forma Exemplo(1 2): "))
            for i in range(numeroDeChoques)]
-numeroDeCursos = 5
 
 
 for i in range(numeroDeCursos):
